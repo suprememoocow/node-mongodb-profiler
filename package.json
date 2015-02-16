@@ -1,0 +1,27 @@
+{
+  "name": "mongodb-profiler",
+  "version": "0.1.0",
+  "description": "MongoDB profiler watcher",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/suprememoocow/node-mongodb-profiler.git"
+  },
+  "keywords": [
+    "mongodb",
+    "system.profile",
+    "profiler"
+  ],
+  "author": "Andrew Newdigate",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/suprememoocow/node-mongodb-profiler/issues"
+  },
+  "homepage": "https://github.com/suprememoocow/node-mongodb-profiler",
+  "dependencies": {
+    "mongodb": "^1.4.0"
+  }
+}
