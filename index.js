@@ -45,9 +45,11 @@ Profiler.prototype._more = function() {
 };
 
 Profiler.prototype._handleProfileItem = function(profile) {
-  if (!profile.ns || profile.ns.match(/\.system\.profile$/)) return;
-  if (profile.ns.indexOf(this.db.databaseName + ".") !== 0) return; // Ignore other databases
-  var collection = profile.ns.substring((this.db.databaseName + ".").length);
+  if (!profile) return; // Ignore nulls? Why are they here?
+  var ns = profile.ns;
+  if (!ns || ns.match(/\.system\.profile$/)) return;
+  if (ns.indexOf(this.db.databaseName + ".") !== 0) return; // Ignore other databases
+  var collection = ns.substring((this.db.databaseName + ".").length);
   profile.collection = collection;
   this.emit("profile", profile);
 };
