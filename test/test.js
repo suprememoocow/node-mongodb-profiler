@@ -86,34 +86,36 @@ describe("mongodb-profiler", function() {
 
   });
 
-  describe('profile-passive', function() {
-    beforeEach(function() {
-      profiler = mongoProfiler({ db: db });
-    });
-
-    afterEach(function() {
-      profiler.stop();
-    });
-
-    it('should profile really slow queries', function(done) {
-      profiler.on("profile", function(profile) {
-        if(profile.ns === 'test.profiler_test' && profile.op === 'query') done();
+  if (!process.env.TRAVIS)  {
+    describe('profile-passive', function() {
+      beforeEach(function() {
+        profiler = mongoProfiler({ db: db });
       });
 
-      db.collection('profiler_test').update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
-        if (err) return done(err);
+      afterEach(function() {
+        profiler.stop();
+      });
 
-        /* This is a shocker of a query! */
-        db.collection('profiler_test').find({ $where: "sleep(10);" }).limit(3).toArray(function(err) {
+      it('should profile really slow queries', function(done) {
+        profiler.on("profile", function(profile) {
+          if(profile.ns === 'test.profiler_test' && profile.op === 'query') done();
+        });
+
+        db.collection('profiler_test').update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
           if (err) return done(err);
+
+          /* This is a shocker of a query! */
+          db.collection('profiler_test').find({ $where: "sleep(10);" }).limit(3).toArray(function(err) {
+            if (err) return done(err);
+          });
+
         });
 
       });
 
     });
 
-  });
-
+  }
 
 
 });
