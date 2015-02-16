@@ -93,8 +93,14 @@ Profiler.prototype._revertProfiling = function(callback) {
 
 
 Profiler.prototype._changeProfiling = function(profilingLevel, slowMs, callback) {
+  var cmd = { profile: profilingLevel };
+  if (typeof slowMs === 'number') {
+    cmd.slowms = slowMs;
+  }
+
   var self = this;
-  this.db.command({ profile: profilingLevel, slowms: slowMs }, function(err, oldValues) {
+  console.log('_changeProfiling', cmd);
+  this.db.command(cmd, function(err, oldValues) {
     if (err) return callback(err);
 
     self.emit("profiling.change", {
