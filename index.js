@@ -20,6 +20,11 @@ function Profiler(options) {
     tailableRetryInterval: 200
   });
 
+  var admin = db.admin();
+  admin.buildInfo(function(err, bi) {
+    console.log('BUILD INFO', arguments);
+  });
+
   this._open = true;
   this._more();
 }
