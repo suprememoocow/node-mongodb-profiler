@@ -8,6 +8,7 @@ function Profiler(options) {
   this.options = options || {};
 
   var db = this.db = options.db;
+  console.log('DB IS ', this.db);
 
   if (options.profile) {
     this._enableProfiling(options.profile);
@@ -30,6 +31,8 @@ Profiler.prototype._more = function() {
   var self = this;
 
   this.cursor.nextObject(function(err, profile) {
+  console.log('nextObject returned>>> ', arguments);
+
     if (!self._open) return;
 
     if (err) {
