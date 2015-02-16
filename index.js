@@ -8,7 +8,6 @@ function Profiler(options) {
   this.options = options || {};
 
   var db = this.db = options.db;
-  console.log('DB IS ', this.db);
 
   if (options.profile) {
     this._enableProfiling(options.profile);
@@ -18,11 +17,6 @@ function Profiler(options) {
     tailable: true,
     batchSize: 10,
     tailableRetryInterval: 200
-  });
-
-  var admin = db.admin();
-  admin.buildInfo(function(err, bi) {
-    console.log('BUILD INFO', arguments);
   });
 
   this._open = true;
@@ -36,8 +30,6 @@ Profiler.prototype._more = function() {
   var self = this;
 
   this.cursor.nextObject(function(err, profile) {
-  console.log('nextObject returned>>> ', arguments);
-
     if (!self._open) return;
 
     if (err) {
@@ -106,7 +98,6 @@ Profiler.prototype._changeProfiling = function(profilingLevel, slowMs, callback)
   }
 
   var self = this;
-  console.log('_changeProfiling', cmd);
   this.db.command(cmd, function(err, oldValues) {
     if (err) return callback(err);
 
