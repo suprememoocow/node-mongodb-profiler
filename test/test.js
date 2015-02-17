@@ -58,7 +58,7 @@ describe("mongodb-profiler", function() {
 
   describe('profile-slow', function() {
     beforeEach(function() {
-      profiler = mongoProfiler({ db: db, profile: { slow: 100 } });
+      profiler = mongoProfiler({ db: db, profile: { slow: 9 } });
     });
 
     afterEach(function() {
@@ -71,12 +71,19 @@ describe("mongodb-profiler", function() {
         if(profile.ns === 'test.profiler_test' && profile.op === 'query') done();
       });
 
-      db.collection('profiler_test').update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
+      var profilerTestCollection = db.collection('profiler_test');
+
+      profilerTestCollection.remove({}, function(err) {
         if (err) return done(err);
 
-        /* This is a shocker of a query! */
-        db.collection('profiler_test').find({ $where: "sleep(10);" }).limit(3).toArray(function(err) {
+        profilerTestCollection.update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
           if (err) return done(err);
+
+          /* This is a shocker of a query! */
+          profilerTestCollection.find({ $where: "sleep(10);" }).limit(3).toArray(function(err) {
+            if (err) return done(err);
+          });
+
         });
 
       });
@@ -101,15 +108,23 @@ describe("mongodb-profiler", function() {
           if(profile.ns === 'test.profiler_test' && profile.op === 'query') done();
         });
 
-        db.collection('profiler_test').update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
+        var profilerTestCollection = db.collection('profiler_test');
+
+        profilerTestCollection.remove({}, function(err) {
           if (err) return done(err);
 
-          /* This is a shocker of a query! */
-          db.collection('profiler_test').find({ $where: "sleep(10);" }).limit(3).toArray(function(err) {
+          profilerTestCollection.update({ a:1 }, { b:1 }, { upsert:true }, function(err) {
             if (err) return done(err);
+
+            /* This is --intentionally-- a shocker of a query! */
+            profilerTestCollection.find({ $where: "sleep(200);" }).limit(3).toArray(function(err) {
+              if (err) return done(err);
+            });
+
           });
 
         });
+
 
       });
 

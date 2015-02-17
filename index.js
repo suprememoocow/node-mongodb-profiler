@@ -13,10 +13,12 @@ function Profiler(options) {
     this._enableProfiling(options.profile);
   }
   var collection = db.collection("system.profile");
-  this.cursor = collection.find({ ts: { $gt: new Date() } }, null, {
+  this.cursor = collection.find({ ts: { $gte: new Date() } }, null, {
     tailable: true,
     batchSize: 10,
-    tailableRetryInterval: 200
+    tailableRetryInterval: 200,
+    await_data: true,
+    numberOfRetries: -1
   });
 
   this._open = true;
@@ -37,10 +39,14 @@ Profiler.prototype._more = function() {
 
       self.emit("error", err);
     } else {
+      if (!profile) {
+        setTimeout(self._more.bind(self), 20);
+        return;
+      }
       self._handleProfileItem(profile);
     }
 
-    setTimeout(self._more.bind(self), 10);
+    setTimeout(self._more.bind(self), 1);
   });
 };
 
